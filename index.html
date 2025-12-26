@@ -3,27 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>PianoMaster - Lyrics Edition</title>
+    <title>PianoMaster 88 - Final Edition</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
     <div id="app">
+        <!-- EN-TÊTE (Jeu) -->
         <header>
             <div class="status-bar">
                 <div class="title-group">
-                    <button id="back-menu-btn" class="icon-btn-small"><i class="fas fa-bars"></i></button>
+                    <button id="back-menu-btn" class="icon-btn-small" title="Retour Menu"><i class="fas fa-arrow-left"></i></button>
                     <span id="lesson-title">PianoMaster</span>
                 </div>
                 <div class="controls">
-                    <button id="mic-btn" class="icon-btn"><i class="fas fa-microphone-slash"></i></button>
-                    <div id="detected-note">--</div>
+                    <!-- Juste l'affichage de la note ici, le bouton est dans le menu -->
+                    <div id="detected-note-display" title="Note détectée">--</div>
                 </div>
             </div>
             <div class="progress-bar"><div id="progress-fill"></div></div>
         </header>
 
+        <!-- ZONE DE PARTITION -->
         <div id="sheet-music">
             <div id="clef-treble">🎼</div>
             <div id="staff-lines-container">
@@ -37,15 +39,26 @@
             <div id="note-cursor"></div>
         </div>
 
-        <div id="feedback-msg">Choisis une chanson</div>
+        <div id="feedback-msg">Prêt à jouer ?</div>
 
+        <!-- CLAVIER -->
         <div id="piano-scroll-container">
             <div id="piano"></div>
         </div>
 
+        <!-- MENU PRINCIPAL -->
         <div id="menu-overlay">
             <h1>🎹 PianoMaster</h1>
-            <p>Avec Paroles & Vraies Notes</p>
+            <p>Connecte ton micro et choisis une chanson</p>
+            
+            <!-- NOUVEAU : ZONE MICRO DANS LE MENU -->
+            <div class="menu-controls">
+                <button id="mic-toggle-btn" class="big-btn">
+                    <i class="fas fa-microphone-slash"></i> Activer le Micro
+                </button>
+                <div id="mic-status-text">Micro désactivé</div>
+            </div>
+
             <div id="lesson-list"></div>
         </div>
     </div>
