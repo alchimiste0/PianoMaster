@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>PianoMaster 88 - Full Edition</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome pour les icônes (Micro, etc.) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <div id="app">
+        <!-- EN-TÊTE -->
+        <header>
+            <div class="status-bar">
+                <div class="title-group">
+                    <button id="back-menu-btn" class="icon-btn-small"><i class="fas fa-home"></i></button>
+                    <span id="lesson-title">PianoMaster 88</span>
+                </div>
+                <div class="controls">
+                    <button id="mic-btn" class="icon-btn" title="Activer le micro"><i class="fas fa-microphone-slash"></i></button>
+                    <div id="detected-note">--</div>
+                </div>
+            </div>
+            <div class="progress-bar"><div id="progress-fill"></div></div>
+        </header>
+
+        <!-- ZONE DE PARTITION (SCROLLING SHEET) -->
+        <div id="sheet-music">
+            <div id="clef-treble">🎼</div>
+            
+            <div id="staff-lines-container">
+                <!-- 5 lignes de portée -->
+                <div class="staff-line"></div>
+                <div class="staff-line"></div>
+                <div class="staff-line"></div>
+                <div class="staff-line"></div>
+                <div class="staff-line"></div>
+                
+                <!-- Conteneur des notes (bulles) -->
+                <div id="notes-container"></div>
+            </div>
+            
+            <!-- Curseur orange fixe -->
+            <div id="note-cursor"></div>
+        </div>
+
+        <!-- MESSAGE FEEDBACK -->
+        <div id="feedback-msg">Choisis une chanson pour commencer !</div>
+
+        <!-- CLAVIER SCROLLABLE (88 TOUCHES) -->
+        <div id="piano-scroll-container">
+            <div id="piano">
+                <!-- Les touches sont générées par JS -->
+            </div>
+        </div>
+
+        <!-- MENU PRINCIPAL (OVERLAY) -->
+        <div id="menu-overlay">
+            <h1>🎹 PianoMaster</h1>
+            <p>Apprends à jouer avec ton vrai piano ou l'écran</p>
+            <div id="lesson-list">
+                <!-- La liste des chansons générée par JS -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
