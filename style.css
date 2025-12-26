@@ -1,9 +1,10 @@
+/* --- VARIABLES --- */
 :root {
-    --primary: #00e676;      /* Vert fluo pour le succès */
-    --accent: #ff4081;       /* Rose pour les touches noires */
+    --primary: #00e676;      /* Vert (Bonne note) */
+    --detected: #29b6f6;     /* Bleu (Note jouée par toi) */
+    --accent: #ff4081;       /* Rose (Touches noires) */
     --dark: #121212;         
     --panel: #1e1e1e;        
-    --paper: #ffffff;        
     --text-light: #ffffff;
 }
 
@@ -21,165 +22,146 @@ body {
 
 #app { display: flex; flex-direction: column; height: 100%; width: 100%; }
 
-/* HEADER */
+/* --- HEADER --- */
 header {
     background: #1f1f1f; padding: 10px 15px; z-index: 20;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5); flex-shrink: 0;
 }
 .status-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 .title-group { display: flex; align-items: center; gap: 10px; overflow: hidden; }
-#lesson-title { font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 1rem; }
-.controls { display: flex; align-items: center; gap: 10px; }
+#lesson-title { font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-#detected-note {
+#detected-note-display {
     width: 45px; height: 35px; line-height: 35px;
     text-align: center; background: #000; border: 1px solid #333;
-    border-radius: 6px; font-weight: bold; color: var(--primary);
+    border-radius: 6px; font-weight: bold; color: var(--detected);
+    font-family: monospace;
 }
 
-.icon-btn, .icon-btn-small {
+.icon-btn-small {
     background: #333; border: none; color: white; border-radius: 50%;
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    width: 35px; height: 35px; cursor: pointer; display: flex; align-items: center; justify-content: center;
 }
-.icon-btn { width: 40px; height: 40px; }
-.icon-btn-small { width: 35px; height: 35px; }
-.icon-btn.listening { background: #d32f2f; animation: pulse 1.5s infinite; }
 
 .progress-bar { height: 4px; background: #333; border-radius: 2px; }
 #progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.2s; }
 
-/* SHEET MUSIC */
+/* --- SHEET MUSIC --- */
 #sheet-music {
-    flex: 2;
-    background: var(--paper);
-    position: relative; overflow: hidden;
-    display: flex; align-items: center;
+    flex: 2; background: #fff;
+    position: relative; overflow: hidden; display: flex; align-items: center;
     border-bottom: 5px solid #ccc;
 }
-
-#clef-treble {
-    position: absolute; left: 10px; font-size: 60px; color: #000;
-    z-index: 5; top: 50%; transform: translateY(-50%);
-}
-
+#clef-treble { position: absolute; left: 10px; font-size: 60px; color: #000; z-index: 5; top: 50%; transform: translateY(-50%); }
 #staff-lines-container {
-    position: absolute; left: 20vw;
-    height: 160px; width: 10000px;
-    top: 50%; transform: translateY(-50%);
-    transition: transform 0.3s cubic-bezier(0.1, 0.7, 1.0, 0.1);
+    position: absolute; left: 20vw; height: 160px; width: 10000px;
+    top: 50%; transform: translateY(-50%); transition: transform 0.3s cubic-bezier(0.1, 0.7, 1.0, 0.1);
 }
-
-.staff-line {
-    position: absolute; width: 100%; height: 1px; background: #999; left: 0;
-}
+.staff-line { position: absolute; width: 100%; height: 1px; background: #999; left: 0; }
 .staff-line:nth-child(1) { top: 40px; }
 .staff-line:nth-child(2) { top: 60px; }
-.staff-line:nth-child(3) { top: 80px; } /* Centre (B4) */
+.staff-line:nth-child(3) { top: 80px; }
 .staff-line:nth-child(4) { top: 100px; }
 .staff-line:nth-child(5) { top: 120px; }
 
-/* NOTES ET PAROLES */
+/* NOTES */
 .sheet-note {
-    position: absolute;
-    width: 42px; height: 28px;
+    position: absolute; width: 42px; height: 28px;
     background: black; border-radius: 14px;
     display: flex; align-items: center; justify-content: center;
     color: white; font-size: 11px; font-weight: bold; font-family: monospace;
     z-index: 2; transform: translate(-50%, -50%);
-    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
     border: 2px solid transparent;
 }
-
-/* Queue de note */
 .sheet-note::after {
-    content: ''; position: absolute;
-    right: 5px; bottom: 12px; width: 2px; height: 35px;
+    content: ''; position: absolute; right: 5px; bottom: 12px; width: 2px; height: 35px;
     background: inherit; z-index: -1;
 }
-
-/* STYLE TOUCHES NOIRES - IMPORTANT */
-.sheet-note.is-black {
-    background: #111; /* Presque noir */
-    border: 2px solid var(--accent); /* Bordure Rose bien visible */
-    color: var(--accent);
-}
+.sheet-note.is-black { background: #111; border: 2px solid var(--accent); color: var(--accent); }
 .sheet-note.is-black::after { background: #111; }
 
-/* PAROLES (LYRICS) */
 .lyric-text {
-    position: absolute;
-    bottom: 35px; /* Au dessus de la note */
-    left: 50%; transform: translateX(-50%);
-    color: #333;
-    font-size: 14px;
-    font-weight: bold;
-    white-space: nowrap;
-    text-shadow: 0 1px 2px rgba(255,255,255,0.8);
-    font-family: sans-serif;
+    position: absolute; bottom: 35px; left: 50%; transform: translateX(-50%);
+    color: #333; font-size: 14px; font-weight: bold; white-space: nowrap;
 }
 
 .sheet-note.correct {
-    background: var(--primary) !important;
-    border-color: var(--primary) !important;
-    color: black !important;
-    box-shadow: 0 0 15px var(--primary);
+    background: var(--primary) !important; border-color: var(--primary) !important; color: black !important;
 }
 .sheet-note.correct::after { background: var(--primary); }
-/* Quand la note est correcte, on colore aussi les paroles */
 .sheet-note.correct .lyric-text { color: var(--primary); }
 
-#note-cursor {
-    position: absolute; left: 20vw; top: 0; bottom: 0; width: 3px;
-    background: rgba(255, 140, 0, 0.7); z-index: 10;
-}
+#note-cursor { position: absolute; left: 20vw; top: 0; bottom: 0; width: 3px; background: rgba(255, 140, 0, 0.7); z-index: 10; }
+#feedback-msg { text-align: center; padding: 5px; color: #888; background: #111; font-size: 0.8rem; }
 
-#feedback-msg {
-    text-align: center; padding: 5px; color: #888; background: #111; font-size: 0.8rem;
-}
-
-/* PIANO */
-#piano-scroll-container {
-    flex: 1; overflow-x: auto; background: #111;
-    scrollbar-width: thin; scrollbar-color: #444 #111;
-}
-
-#piano {
-    display: flex; height: 100%; padding: 0 20px; width: max-content;
-}
-
+/* --- PIANO --- */
+#piano-scroll-container { flex: 1; overflow-x: auto; background: #111; scrollbar-width: thin; }
+#piano { display: flex; height: 100%; padding: 0 20px; width: max-content; }
 .key {
     position: relative; display: flex; align-items: flex-end; justify-content: center;
-    padding-bottom: 5px; user-select: none; cursor: pointer;
+    padding-bottom: 5px; user-select: none; cursor: pointer; transition: background 0.1s;
 }
-
 .white {
-    width: 44px; height: 100%; background: white;
-    border: 1px solid #888; border-radius: 0 0 4px 4px;
-    color: #333; font-weight: bold; font-size: 12px; z-index: 1;
+    width: 44px; height: 100%; background: white; border: 1px solid #888;
+    border-radius: 0 0 4px 4px; color: #333; font-weight: bold; font-size: 12px; z-index: 1;
 }
-.white.active { background: var(--primary); color: black; }
-
 .black {
-    width: 28px; height: 65%; background: #000;
-    margin: 0 -14px; z-index: 2;
-    border-radius: 0 0 3px 3px; border-bottom: 3px solid #222;
-    color: #ccc; font-size: 9px; padding-bottom: 8px;
+    width: 28px; height: 65%; background: #000; margin: 0 -14px; z-index: 2;
+    border-radius: 0 0 3px 3px; border-bottom: 3px solid #222; color: #ccc; font-size: 9px; padding-bottom: 8px;
 }
-.black.active { background: var(--primary); border-color: var(--primary); color: black; }
 
-/* MENU */
+/* ÉTAT : NOTE JOUÉE PAR L'UTILISATEUR (BLEU) */
+.key.detected {
+    background: var(--detected) !important;
+    color: white !important;
+    box-shadow: 0 0 15px var(--detected);
+}
+
+/* ÉTAT : NOTE VALIDÉE DANS LE JEU (VERT) */
+.key.active {
+    background: var(--primary) !important;
+    color: black !important;
+}
+
+/* --- MENU --- */
 #menu-overlay {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0,0,0,0.95); z-index: 100;
     display: flex; flex-direction: column; align-items: center; padding: 20px;
 }
-#lesson-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; width: 100%; overflow-y: auto; }
+
+/* CONTROLES DU MENU (MICRO) */
+.menu-controls {
+    margin: 20px 0;
+    text-align: center;
+    padding: 20px;
+    background: #2a2a2a;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 400px;
+}
+
+.big-btn {
+    background: #444; color: white; border: none;
+    padding: 15px 30px; font-size: 1.2rem; border-radius: 50px;
+    cursor: pointer; transition: 0.3s; width: 100%;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.big-btn:hover { background: #555; }
+.big-btn.active {
+    background: #d32f2f;
+    box-shadow: 0 0 20px rgba(211, 47, 47, 0.4);
+    animation: pulse 1.5s infinite;
+}
+
+#mic-status-text { margin-top: 10px; color: #888; font-size: 0.9rem; }
+
+#lesson-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; width: 100%; overflow-y: auto; padding-bottom: 50px; }
 .lesson-card {
     background: #222; padding: 15px; width: 100%; max-width: 350px;
     border-radius: 8px; cursor: pointer; border-left: 4px solid var(--primary);
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
-.lesson-card:hover { background: #333; }
+.lesson-card:hover { background: #333; transform: translateX(5px); transition: 0.2s; }
 
-@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
