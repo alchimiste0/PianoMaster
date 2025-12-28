@@ -3,22 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>PianoMaster 88 - Final Edition</title>
+    <title>PianoMaster - Assist Edition</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
     <div id="app">
-        <!-- EN-TÊTE (Jeu) -->
+        <!-- EN-TÊTE -->
         <header>
             <div class="status-bar">
                 <div class="title-group">
-                    <button id="back-menu-btn" class="icon-btn-small" title="Retour Menu"><i class="fas fa-arrow-left"></i></button>
+                    <button id="back-menu-btn" class="icon-btn-small" title="Menu"><i class="fas fa-bars"></i></button>
+                    <!-- BOUTONS NAVIGATION -->
+                    <div class="nav-controls">
+                        <button id="prev-btn" class="nav-btn"><i class="fas fa-backward"></i></button>
+                        <button id="next-btn" class="nav-btn"><i class="fas fa-forward"></i></button>
+                    </div>
                     <span id="lesson-title">PianoMaster</span>
                 </div>
                 <div class="controls">
-                    <!-- Juste l'affichage de la note ici, le bouton est dans le menu -->
                     <div id="detected-note-display" title="Note détectée">--</div>
                 </div>
             </div>
@@ -39,9 +43,9 @@
             <div id="note-cursor"></div>
         </div>
 
-        <div id="feedback-msg">Prêt à jouer ?</div>
+        <div id="feedback-msg">Active le micro dans le menu</div>
 
-        <!-- CLAVIER -->
+        <!-- CLAVIER (Scroll manuel uniquement) -->
         <div id="piano-scroll-container">
             <div id="piano"></div>
         </div>
@@ -49,14 +53,21 @@
         <!-- MENU PRINCIPAL -->
         <div id="menu-overlay">
             <h1>🎹 PianoMaster</h1>
-            <p>Connecte ton micro et choisis une chanson</p>
             
-            <!-- NOUVEAU : ZONE MICRO DANS LE MENU -->
             <div class="menu-controls">
                 <button id="mic-toggle-btn" class="big-btn">
                     <i class="fas fa-microphone-slash"></i> Activer le Micro
                 </button>
                 <div id="mic-status-text">Micro désactivé</div>
+                
+                <!-- TOGGLE MODE ASSISTÉ -->
+                <div class="toggle-container">
+                    <label class="switch">
+                        <input type="checkbox" id="assist-mode-toggle">
+                        <span class="slider round"></span>
+                    </label>
+                    <span>Mode Assisté (Touche Orange)</span>
+                </div>
             </div>
 
             <div id="lesson-list"></div>
