@@ -1,7 +1,8 @@
 /* --- VARIABLES --- */
 :root {
-    --primary: #00e676;      /* Vert (Bonne note) */
-    --detected: #29b6f6;     /* Bleu (Note jouée par toi) */
+    --primary: #00e676;      /* Vert (Succès) */
+    --detected: #29b6f6;     /* Bleu (Détection micro) */
+    --assist: #ff9100;       /* Orange (Aide) */
     --accent: #ff4081;       /* Rose (Touches noires) */
     --dark: #121212;         
     --panel: #1e1e1e;        
@@ -11,13 +12,9 @@
 * { box-sizing: border-box; }
 
 body {
-    margin: 0; padding: 0;
-    background-color: var(--dark);
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    color: var(--text-light);
-    overflow: hidden;
-    height: 100vh; width: 100vw;
-    display: flex; flex-direction: column;
+    margin: 0; padding: 0; background-color: var(--dark);
+    font-family: 'Segoe UI', Tahoma, sans-serif; color: var(--text-light);
+    overflow: hidden; height: 100vh; width: 100vw; display: flex; flex-direction: column;
 }
 
 #app { display: flex; flex-direction: column; height: 100%; width: 100%; }
@@ -28,14 +25,21 @@ header {
     box-shadow: 0 4px 10px rgba(0,0,0,0.5); flex-shrink: 0;
 }
 .status-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.title-group { display: flex; align-items: center; gap: 10px; overflow: hidden; }
+.title-group { display: flex; align-items: center; gap: 15px; overflow: hidden; }
 #lesson-title { font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+/* NAV BUTTONS */
+.nav-controls { display: flex; gap: 5px; }
+.nav-btn {
+    background: #444; border: none; color: white; width: 40px; height: 35px;
+    border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.nav-btn:active { background: #666; transform: scale(0.95); }
+
 #detected-note-display {
-    width: 45px; height: 35px; line-height: 35px;
-    text-align: center; background: #000; border: 1px solid #333;
-    border-radius: 6px; font-weight: bold; color: var(--detected);
-    font-family: monospace;
+    width: 45px; height: 35px; line-height: 35px; text-align: center;
+    background: #000; border: 1px solid #333; border-radius: 6px;
+    font-weight: bold; color: var(--detected); font-family: monospace;
 }
 
 .icon-btn-small {
@@ -44,19 +48,23 @@ header {
 }
 
 .progress-bar { height: 4px; background: #333; border-radius: 2px; }
-#progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.2s; }
+#progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s ease; }
 
-/* --- SHEET MUSIC --- */
+/* --- PARTITION --- */
 #sheet-music {
-    flex: 2; background: #fff;
-    position: relative; overflow: hidden; display: flex; align-items: center;
-    border-bottom: 5px solid #ccc;
+    flex: 2; background: #fff; position: relative; overflow: hidden;
+    display: flex; align-items: center; border-bottom: 5px solid #ccc;
 }
 #clef-treble { position: absolute; left: 10px; font-size: 60px; color: #000; z-index: 5; top: 50%; transform: translateY(-50%); }
+
+/* ANIMATION D'AVANCEMENT FLUIDE */
 #staff-lines-container {
     position: absolute; left: 20vw; height: 160px; width: 10000px;
-    top: 50%; transform: translateY(-50%); transition: transform 0.3s cubic-bezier(0.1, 0.7, 1.0, 0.1);
+    top: 50%; transform: translateY(-50%);
+    /* C'est ici que l'animation se joue : 0.5s pour bouger */
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
 }
+
 .staff-line { position: absolute; width: 100%; height: 1px; background: #999; left: 0; }
 .staff-line:nth-child(1) { top: 40px; }
 .staff-line:nth-child(2) { top: 60px; }
@@ -66,12 +74,10 @@ header {
 
 /* NOTES */
 .sheet-note {
-    position: absolute; width: 42px; height: 28px;
-    background: black; border-radius: 14px;
+    position: absolute; width: 42px; height: 28px; background: black; border-radius: 14px;
     display: flex; align-items: center; justify-content: center;
     color: white; font-size: 11px; font-weight: bold; font-family: monospace;
-    z-index: 2; transform: translate(-50%, -50%);
-    border: 2px solid transparent;
+    z-index: 2; transform: translate(-50%, -50%); border: 2px solid transparent;
 }
 .sheet-note::after {
     content: ''; position: absolute; right: 5px; bottom: 12px; width: 2px; height: 35px;
@@ -85,9 +91,7 @@ header {
     color: #333; font-size: 14px; font-weight: bold; white-space: nowrap;
 }
 
-.sheet-note.correct {
-    background: var(--primary) !important; border-color: var(--primary) !important; color: black !important;
-}
+.sheet-note.correct { background: var(--primary) !important; border-color: var(--primary) !important; color: black !important; }
 .sheet-note.correct::after { background: var(--primary); }
 .sheet-note.correct .lyric-text { color: var(--primary); }
 
@@ -101,27 +105,20 @@ header {
     position: relative; display: flex; align-items: flex-end; justify-content: center;
     padding-bottom: 5px; user-select: none; cursor: pointer; transition: background 0.1s;
 }
-.white {
-    width: 44px; height: 100%; background: white; border: 1px solid #888;
-    border-radius: 0 0 4px 4px; color: #333; font-weight: bold; font-size: 12px; z-index: 1;
-}
-.black {
-    width: 28px; height: 65%; background: #000; margin: 0 -14px; z-index: 2;
-    border-radius: 0 0 3px 3px; border-bottom: 3px solid #222; color: #ccc; font-size: 9px; padding-bottom: 8px;
-}
+.white { width: 44px; height: 100%; background: white; border: 1px solid #888; border-radius: 0 0 4px 4px; color: #333; font-weight: bold; font-size: 12px; z-index: 1; }
+.black { width: 28px; height: 65%; background: #000; margin: 0 -14px; z-index: 2; border-radius: 0 0 3px 3px; border-bottom: 3px solid #222; color: #ccc; font-size: 9px; padding-bottom: 8px; }
 
-/* ÉTAT : NOTE JOUÉE PAR L'UTILISATEUR (BLEU) */
-.key.detected {
-    background: var(--detected) !important;
-    color: white !important;
-    box-shadow: 0 0 15px var(--detected);
-}
+/* ÉTATS DES TOUCHES */
+.key.detected { background: var(--detected) !important; color: white !important; box-shadow: 0 0 15px var(--detected); }
+.key.active { background: var(--primary) !important; color: black !important; }
 
-/* ÉTAT : NOTE VALIDÉE DANS LE JEU (VERT) */
-.key.active {
-    background: var(--primary) !important;
-    color: black !important;
+/* MODE ASSISTÉ : TOUCHE ORANGE */
+.key.suggested {
+    background: var(--assist) !important;
+    box-shadow: inset 0 0 10px #e65100;
 }
+/* On garde la priorité au noir sur les noires pour le texte */
+.black.key.suggested { border-color: var(--assist); color: var(--assist); }
 
 /* --- MENU --- */
 #menu-overlay {
@@ -129,39 +126,29 @@ header {
     background: rgba(0,0,0,0.95); z-index: 100;
     display: flex; flex-direction: column; align-items: center; padding: 20px;
 }
-
-/* CONTROLES DU MENU (MICRO) */
-.menu-controls {
-    margin: 20px 0;
-    text-align: center;
-    padding: 20px;
-    background: #2a2a2a;
-    border-radius: 15px;
-    width: 90%;
-    max-width: 400px;
-}
-
+.menu-controls { margin: 20px 0; text-align: center; padding: 20px; background: #2a2a2a; border-radius: 15px; width: 90%; max-width: 400px; }
 .big-btn {
-    background: #444; color: white; border: none;
-    padding: 15px 30px; font-size: 1.2rem; border-radius: 50px;
-    cursor: pointer; transition: 0.3s; width: 100%;
+    background: #444; color: white; border: none; padding: 15px 30px; font-size: 1.2rem;
+    border-radius: 50px; cursor: pointer; transition: 0.3s; width: 100%;
     display: flex; align-items: center; justify-content: center; gap: 10px;
 }
 .big-btn:hover { background: #555; }
-.big-btn.active {
-    background: #d32f2f;
-    box-shadow: 0 0 20px rgba(211, 47, 47, 0.4);
-    animation: pulse 1.5s infinite;
-}
-
+.big-btn.active { background: #d32f2f; box-shadow: 0 0 20px rgba(211, 47, 47, 0.4); animation: pulse 1.5s infinite; }
 #mic-status-text { margin-top: 10px; color: #888; font-size: 0.9rem; }
 
+/* TOGGLE SWITCH */
+.toggle-container { margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; color: #ccc; }
+.switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #444; transition: .4s; }
+.slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; }
+input:checked + .slider { background-color: var(--assist); }
+input:checked + .slider:before { transform: translateX(24px); }
+.slider.round { border-radius: 34px; }
+.slider.round:before { border-radius: 50%; }
+
 #lesson-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; width: 100%; overflow-y: auto; padding-bottom: 50px; }
-.lesson-card {
-    background: #222; padding: 15px; width: 100%; max-width: 350px;
-    border-radius: 8px; cursor: pointer; border-left: 4px solid var(--primary);
-    margin-bottom: 5px;
-}
+.lesson-card { background: #222; padding: 15px; width: 100%; max-width: 350px; border-radius: 8px; cursor: pointer; border-left: 4px solid var(--primary); margin-bottom: 5px; }
 .lesson-card:hover { background: #333; transform: translateX(5px); transition: 0.2s; }
 
 @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
